@@ -10,13 +10,18 @@ import androidx.paging.LoadStates
 import androidx.recyclerview.widget.RecyclerView
 import com.example.beerpagingsource.databinding.ItemBeerLoadViewBinding
 
-class BeerLoadStateAdapter :  LoadStateAdapter<BeerLoadStateAdapter.BeerLoadViewHolder>() {
+class BeerLoadStateAdapter(
+    val onAppendError : (String?) -> Unit = {}
+) :  LoadStateAdapter<BeerLoadStateAdapter.BeerLoadViewHolder>() {
 
     inner class BeerLoadViewHolder(
         private val binding : ItemBeerLoadViewBinding
     ) : RecyclerView.ViewHolder(binding.root){
         fun toBind(loadState: LoadState) {
             Log.d("TAG", "toBind: ${loadState}")
+            if (loadState is LoadState.Error){
+                onAppendError(loadState.error.message)
+            }
             if (loadState is LoadState.Loading){
                 binding.progressBar.visibility = View.VISIBLE
             }else{
